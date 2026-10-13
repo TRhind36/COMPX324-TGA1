@@ -6,13 +6,41 @@
     <link rel="stylesheet" href="styling.css" />
     <title>FinPrivSys</title>
   </head>
-  <body>
+  <body data-page="addConnection">
     <nav>
       <p class="title-text">FinPrivSys</p>
       <a href="" id="homeButton">Dashboard</a>
       <a href="" id="logoutButton">Logout</a>
     </nav>
-    <main></main>
+    <main>
+      <h1>Add Connection</h1>
+      <form id="addConnectionForm">
+        <label for="connectionName">Connection Name:</label>
+        <input type="text" id="connectionName" name="connectionName" required />
+        <label for="connectionType">Connection Type:</label>
+        <select id="connectionType" name="connectionType" required>
+          <option value="">Select a type</option>
+          <option value="bank">Bank</option>
+          <option value="investment">Investment</option>
+        </select>
+        <label for="nameOfValueToBeTracked">Name of Value to be Tracked:</label>
+        <input
+          type="text"
+          id="nameOfValueToBeTracked"
+          name="nameOfValueToBeTracked"
+          required
+        />
+        <label for="valueToBeTracked">Value to be Tracked:</label>
+        <input
+          type="number"
+          id="valueToBeTracked"
+          name="valueToBeTracked"
+          required
+        />
+
+        <button type="submit">Add Connection</button>
+      </form>
+    </main>
     <script type="module" src="scripts.js"></script>
   </body>
 </html>

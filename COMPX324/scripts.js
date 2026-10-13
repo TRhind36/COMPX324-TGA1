@@ -62,10 +62,10 @@ if (!sessionStorage.getItem("connectedAccounts")) {
           shares: 5,
           purchasePrice: 250,
           purchaseDate: "2026-03-19",
-        }
-      ]
-    }
-  ]
+        },
+      ],
+    },
+  ];
 
   sessionStorage.setItem("connectedAccounts", JSON.stringify(initialAccounts));
 }
@@ -95,7 +95,6 @@ if (logoutButton) {
 //====================================================================
 // Login/Pin Page Section  Lucas
 if (page === "login") {
-
   const pinPopup = document.getElementById("pinPopup");
   const pinInput = document.getElementById("pinInput");
   const pinError = document.getElementById("pinError");
@@ -178,7 +177,10 @@ if (page === "login") {
   forgotSendButton.addEventListener("click", () => {
     if (/^\S+@\S+\.\S+$/.test(forgotEmailInput.value)) {
       forgotForm.style.display = "none";
-      forgotMessage.textContent = "A link to reset your username and password has been sent to " + forgotEmailInput.value + ". Check your inbox and spam folder.";
+      forgotMessage.textContent =
+        "A link to reset your username and password has been sent to " +
+        forgotEmailInput.value +
+        ". Check your inbox and spam folder.";
       forgotMessage.style.display = "block";
       forgotCloseButton.textContent = "Close";
     } else {
@@ -199,9 +201,7 @@ if (page === "login") {
 
 //====================================================================
 // Quick Balances Page Section  Lucas
-
 else if (page === "quickBalances") {
-
   const balanceTable = document.getElementById("balanceTable");
   const backButton = document.getElementById("backButton");
 
@@ -214,8 +214,12 @@ else if (page === "quickBalances") {
 
   balances.forEach((account) => {
     balanceTable.innerHTML +=
-      '<tr><td class="col1">' + account.title + '</td>' +
-      '<td class="col2">$' + account.balance.toFixed(2) + '</td></tr>';
+      '<tr><td class="col1">' +
+      account.title +
+      "</td>" +
+      '<td class="col2">$' +
+      account.balance.toFixed(2) +
+      "</td></tr>";
   });
 
   backButton.addEventListener("click", () => {
@@ -390,6 +394,7 @@ else if (page === "budgeting") {
 //====================================================================
 // Home/Dashboard Page Section
 else if (page === "home") {
+  console.log("Page: " + page);
   const connectionsList = document.getElementById("connectionsList");
 
   const accountData = JSON.parse(sessionStorage.getItem("connectedAccounts"));
@@ -405,27 +410,39 @@ else if (page === "home") {
     th.classList.add("col1");
     tr1.appendChild(th);
     tbl.appendChild(tr1);
-    switch(data.title) {
+    switch (data.title) {
       case "BNZ":
-        var bnzData = bnz(data)
+        var bnzData = bnz(data);
         for (var i in bnzData) {
           tbl.appendChild(bnzData[i]);
         }
         break;
       case "StudyLink":
-        var studyLinkData = studyLink(data)
+        var studyLinkData = studyLink(data);
         for (var i in studyLinkData) {
           tbl.appendChild(studyLinkData[i]);
         }
         break;
       case "Sharesies":
-        var sharesiesData = sharesies(data)
+        var sharesiesData = sharesies(data);
         for (var i in sharesiesData) {
           tbl.appendChild(sharesiesData[i]);
         }
         break;
       default:
         break;
+    }
+    if (data.type === "bank") {
+      var bankData = bank(data);
+      for (var i in bankData) {
+        tbl.appendChild(bankData[i]);
+      }
+    }
+    if (data.type === "investment") {
+      var investmentData = investment(data);
+      for (var i in investmentData) {
+        tbl.appendChild(investmentData[i]);
+      }
     }
     btn.appendChild(tbl);
     btn.addEventListener("click", () => {
@@ -436,7 +453,12 @@ else if (page === "home") {
   }
 
   function bnz(data) {
-    const fields = {"Balance": data.balance, "Kiwisaver": data.kiwisaver, "Mortgage": data.mortgage, "Savings": data.savings};
+    const fields = {
+      Balance: data.balance,
+      Kiwisaver: data.kiwisaver,
+      Mortgage: data.mortgage,
+      Savings: data.savings,
+    };
 
     var rows = [];
     for (var fieldName in fields) {
@@ -456,8 +478,11 @@ else if (page === "home") {
   }
 
   function studyLink(data) {
-    const fields = {"Balance": data.balance, "Next Payment Due": data.nextPaymentDate};
-    
+    const fields = {
+      Balance: data.balance,
+      "Next Payment Due": data.nextPaymentDate,
+    };
+
     var rows = [];
     for (var fieldName in fields) {
       var row = document.createElement("tr");
@@ -476,7 +501,53 @@ else if (page === "home") {
   }
 
   function sharesies(data) {
-    const fields = {"Balance": data.balance};
+    const fields = { Balance: data.balance };
+
+    var rows = [];
+    for (var fieldName in fields) {
+      var row = document.createElement("tr");
+      var field = document.createElement("td");
+      field.classList.add("col1");
+      field.textContent = fieldName;
+      var value = document.createElement("td");
+      value.classList.add("col2");
+      value.textContent = fields[fieldName];
+      row.appendChild(field);
+      row.appendChild(value);
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  function bank(data) {
+    const fields = {
+      Title: data.title,
+      [data.valueName]: data.balance,
+    };
+
+    var rows = [];
+    for (var fieldName in fields) {
+      var row = document.createElement("tr");
+      var field = document.createElement("td");
+      field.classList.add("col1");
+      field.textContent = fieldName;
+      var value = document.createElement("td");
+      value.classList.add("col2");
+      value.textContent = fields[fieldName];
+      row.appendChild(field);
+      row.appendChild(value);
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  function investment(data) {
+    const fields = {
+      Title: data.title,
+      [data.valueName]: data.balance,
+    };
 
     var rows = [];
     for (var fieldName in fields) {
@@ -506,11 +577,16 @@ else if (page === "home") {
   viewConnectionsButton.textContent = "View All Connections";
   viewConnectionsButton.id = "viewConnectionsButton";
   connectionsList.appendChild(viewConnectionsButton);
+
+  viewConnectionsButton.addEventListener("click", () => {
+    location.href = "connectionsList.html";
+  });
 }
 
 //====================================================================
 // Connection Details Page Section
 else if (page === "connectionDetails") {
+  console.log("Page: " + page);
   const jsonData = sessionStorage.getItem("connectionDetailsData");
   const accountTitle = document.getElementById("accountTitle");
   const accountBalance = document.getElementById("accountBalance");
@@ -552,7 +628,8 @@ else if (page === "connectionDetails") {
         break;
       case "StudyLink":
         var nextPaymentDate = document.createElement("h3");
-        nextPaymentDate.textContent = "Next Payment Date: " + data.nextPaymentDate;
+        nextPaymentDate.textContent =
+          "Next Payment Date: " + data.nextPaymentDate;
         moreDetails.appendChild(nextPaymentDate);
         break;
       case "Sharesies":
@@ -579,13 +656,212 @@ else if (page === "connectionDetails") {
 //====================================================================
 // Connections List Page Section
 else if (page === "connectionsList") {
-  // ...
+  console.log("Page: " + page);
+  const connectionsListPage = document.getElementById("connectionsPageList");
+  const connectedAccounts =
+    JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
+  function accountButtonForConnectionListPage(data) {
+    const btn = document.createElement("button");
+    btn.classList.add("connection-button");
+    const tbl = document.createElement("table");
+    tbl.classList.add("connection-table");
+    const tr1 = document.createElement("tr");
+    const th = document.createElement("th");
+    th.textContent = data.title;
+    th.classList.add("col1");
+    tr1.appendChild(th);
+    tbl.appendChild(tr1);
+    switch (data.title) {
+      case "BNZ":
+        var bnzData = bnz(data);
+        for (var i in bnzData) {
+          tbl.appendChild(bnzData[i]);
+        }
+        break;
+      case "StudyLink":
+        var studyLinkData = studyLink(data);
+        for (var i in studyLinkData) {
+          tbl.appendChild(studyLinkData[i]);
+        }
+        break;
+      case "Sharesies":
+        var sharesiesData = sharesies(data);
+        for (var i in sharesiesData) {
+          tbl.appendChild(sharesiesData[i]);
+        }
+        break;
+      default:
+        break;
+    }
+    if (data.type === "bank") {
+      var bankData = bank(data);
+      for (var i in bankData) {
+        tbl.appendChild(bankData[i]);
+      }
+    }
+    if (data.type === "investment") {
+      var investmentData = investment(data);
+      for (var i in investmentData) {
+        tbl.appendChild(investmentData[i]);
+      }
+    }
+
+    function bnz(data) {
+      const fields = {
+        Balance: data.balance,
+        Kiwisaver: data.kiwisaver,
+        Mortgage: data.mortgage,
+        Savings: data.savings,
+      };
+
+      var rows = [];
+      for (var fieldName in fields) {
+        var row = document.createElement("tr");
+        var field = document.createElement("td");
+        field.classList.add("col1");
+        field.textContent = fieldName;
+        var value = document.createElement("td");
+        value.classList.add("col2");
+        value.textContent = fields[fieldName];
+        row.appendChild(field);
+        row.appendChild(value);
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function studyLink(data) {
+      const fields = {
+        Balance: data.balance,
+        "Next Payment Due": data.nextPaymentDate,
+      };
+
+      var rows = [];
+      for (var fieldName in fields) {
+        var row = document.createElement("tr");
+        var field = document.createElement("td");
+        field.classList.add("col1");
+        field.textContent = fieldName;
+        var value = document.createElement("td");
+        value.classList.add("col2");
+        value.textContent = fields[fieldName];
+        row.appendChild(field);
+        row.appendChild(value);
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function sharesies(data) {
+      const fields = { Balance: data.balance };
+
+      var rows = [];
+      for (var fieldName in fields) {
+        var row = document.createElement("tr");
+        var field = document.createElement("td");
+        field.classList.add("col1");
+        field.textContent = fieldName;
+        var value = document.createElement("td");
+        value.classList.add("col2");
+        value.textContent = fields[fieldName];
+        row.appendChild(field);
+        row.appendChild(value);
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function bank(data) {
+      const fields = {
+        Title: data.title,
+        [data.valueName]: data.balance,
+      };
+
+      var rows = [];
+      for (var fieldName in fields) {
+        var row = document.createElement("tr");
+        var field = document.createElement("td");
+        field.classList.add("col1");
+        field.textContent = fieldName;
+        var value = document.createElement("td");
+        value.classList.add("col2");
+        value.textContent = fields[fieldName];
+        row.appendChild(field);
+        row.appendChild(value);
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function investment(data) {
+      const fields = {
+        Title: data.title,
+        [data.valueName]: data.balance,
+      };
+
+      var rows = [];
+      for (var fieldName in fields) {
+        var row = document.createElement("tr");
+        var field = document.createElement("td");
+        field.classList.add("col1");
+        field.textContent = fieldName;
+        var value = document.createElement("td");
+        value.classList.add("col2");
+        value.textContent = fields[fieldName];
+        row.appendChild(field);
+        row.appendChild(value);
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    btn.appendChild(tbl);
+    btn.addEventListener("click", () => {
+      sessionStorage.setItem("connectionDetailsData", JSON.stringify(data));
+      location.href = "connectionDetails.html";
+    });
+    connectionsListPage.appendChild(btn);
+  }
+  for (var i in connectedAccounts) {
+    const data = connectedAccounts[i];
+    accountButtonForConnectionListPage(data);
+  }
 }
 
 //====================================================================
 // Add Connection Page Section
-else if (page === "connectionsList") {
-  // ...
+else if (page === "addConnection") {
+  console.log("Add Connection Page Loaded");
+  console.log("Page: " + page);
+  const form = document.getElementById("addConnectionForm");
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const title = formData.get("connectionName");
+    const connectionType = formData.get("connectionType");
+    const nameOfValueToBeTracked = formData.get("nameOfValueToBeTracked");
+    const valueToBeTracked = parseFloat(formData.get("valueToBeTracked"));
+    const newConnection = {
+      title: title,
+      type: connectionType,
+      valueName: nameOfValueToBeTracked,
+      balance: valueToBeTracked,
+    };
+    const connectedAccounts =
+      JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
+    connectedAccounts.push(newConnection);
+    sessionStorage.setItem(
+      "connectedAccounts",
+      JSON.stringify(connectedAccounts),
+    );
+
+    location.href = "home.html";
+  });
 }
 
 //====================================================================
