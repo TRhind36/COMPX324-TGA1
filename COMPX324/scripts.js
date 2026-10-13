@@ -497,7 +497,6 @@ else if (page === "home") {
 
   // Create a button for each account
   for (var i in accountData) {
-    console.log(accountData[i]);
     const data = accountData[i];
     accountButton(data);
   }
@@ -521,6 +520,59 @@ else if (page === "connectionDetails") {
 
     accountTitle.textContent = data.title;
     accountBalance.textContent = "Total Balance: $" + data.balance;
+
+    var moreDetails = document.getElementById("moreDetails");
+    switch (data.title) {
+      case "BNZ":
+        var savings = document.createElement("h3");
+        savings.textContent = "Savings: $" + data.savings;
+        var kiwisaver = document.createElement("h3");
+        kiwisaver.textContent = "Kiwisaver: $" + data.kiwisaver;
+        var mortgage = document.createElement("h3");
+        mortgage.textContent = "Mortgage: $" + data.mortgage;
+        moreDetails.appendChild(savings);
+        moreDetails.appendChild(kiwisaver);
+        moreDetails.appendChild(mortgage);
+        var recentTransactions = document.createElement("div");
+        var rtHeader = document.createElement("h2");
+        rtHeader.textContent = "Recent Transactions";
+        recentTransactions.appendChild(rtHeader);
+        for (var i in data.recentTransactions) {
+          var transaction = document.createElement("div");
+          transaction.classList.add("transaction");
+          for (var j in data.recentTransactions[i]) {
+            var p = document.createElement("p");
+            var jCap = String(j[0]).toUpperCase() + String(j).slice(1);
+            p.textContent = jCap + ": " + data.recentTransactions[i][j];
+            transaction.appendChild(p);
+          }
+          recentTransactions.appendChild(transaction);
+        }
+        moreDetails.appendChild(recentTransactions);
+        break;
+      case "StudyLink":
+        var nextPaymentDate = document.createElement("h3");
+        nextPaymentDate.textContent = "Next Payment Date: " + data.nextPaymentDate;
+        moreDetails.appendChild(nextPaymentDate);
+        break;
+      case "Sharesies":
+        var stocks = document.createElement("div");
+        for (var i in data.stocks) {
+          var stock = document.createElement("div");
+          stock.classList.add("stock");
+          for (var j in data.stocks[i]) {
+            var p = document.createElement("p");
+            var jCap = String(j[0]).toUpperCase() + String(j).slice(1);
+            p.textContent = jCap + ": " + data.stocks[i][j];
+            stock.appendChild(p);
+          }
+          stocks.appendChild(stock);
+        }
+        moreDetails.appendChild(stocks);
+        break;
+      default:
+        break;
+    }
   }
 }
 
