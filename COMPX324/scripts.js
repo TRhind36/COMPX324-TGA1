@@ -276,40 +276,123 @@ else if (page === "budgeting") {
 //====================================================================
 // Home/Dashboard Page Section
 else if (page === "home") {
-  const account1Button = document.getElementById("account1Button");
-  const account2Button = document.getElementById("account2Button");
-  const account3Button = document.getElementById("account3Button");
+  const connectionsList = document.getElementById("connectionsList");
 
   const accountData = JSON.parse(sessionStorage.getItem("connectedAccounts"));
 
-  // console.log(accountData);
-  // for (var i in accountData) { keep working here
-  //   console.log(i);
-  // }
-
-  const account1Data = {
-    title: "Account 1",
-    balance: 1000,
-  };
-  const account2Data = {
-    title: "Account 2",
-    balance: 2000,
-  };
-  const account3Data = {
-    title: "Account 3",
-    balance: 3000,
-  };
-
-  function gotoConnectionDetails(btn, data) {
+  function accountButton(data) {
+    const btn = document.createElement("button");
+    btn.classList.add("connection-button");
+    const tbl = document.createElement("table");
+    tbl.classList.add("connection-table");
+    const tr1 = document.createElement("tr");
+    const th = document.createElement("th");
+    th.textContent = data.title;
+    th.classList.add("col1");
+    tr1.appendChild(th);
+    tbl.appendChild(tr1);
+    switch(data.title) {
+      case "BNZ":
+        var bnzData = bnz(data)
+        for (var i in bnzData) {
+          tbl.appendChild(bnzData[i]);
+        }
+        break;
+      case "StudyLink":
+        var studyLinkData = studyLink(data)
+        for (var i in studyLinkData) {
+          tbl.appendChild(studyLinkData[i]);
+        }
+        break;
+      case "Sharesies":
+        var sharesiesData = sharesies(data)
+        for (var i in sharesiesData) {
+          tbl.appendChild(sharesiesData[i]);
+        }
+        break;
+      default:
+        break;
+    }
+    btn.appendChild(tbl);
     btn.addEventListener("click", () => {
       sessionStorage.setItem("connectionDetailsData", JSON.stringify(data));
       location.href = "connectionDetails.html";
     });
+    connectionsList.appendChild(btn);
   }
 
-  gotoConnectionDetails(account1Button, account1Data);
-  gotoConnectionDetails(account2Button, account2Data);
-  gotoConnectionDetails(account3Button, account3Data);
+  function bnz(data) {
+    const fields = {"Balance": data.balance, "Kiwisaver": data.kiwisaver, "Mortgage": data.mortgage, "Savings": data.savings};
+
+    var rows = [];
+    for (var fieldName in fields) {
+      var row = document.createElement("tr");
+      var field = document.createElement("td");
+      field.classList.add("col1");
+      field.textContent = fieldName;
+      var value = document.createElement("td");
+      value.classList.add("col2");
+      value.textContent = fields[fieldName];
+      row.appendChild(field);
+      row.appendChild(value);
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  function studyLink(data) {
+    const fields = {"Balance": data.balance, "Next Payment Due": data.nextPaymentDate};
+    
+    var rows = [];
+    for (var fieldName in fields) {
+      var row = document.createElement("tr");
+      var field = document.createElement("td");
+      field.classList.add("col1");
+      field.textContent = fieldName;
+      var value = document.createElement("td");
+      value.classList.add("col2");
+      value.textContent = fields[fieldName];
+      row.appendChild(field);
+      row.appendChild(value);
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  function sharesies(data) {
+    const fields = {"Balance": data.balance};
+
+    var rows = [];
+    for (var fieldName in fields) {
+      var row = document.createElement("tr");
+      var field = document.createElement("td");
+      field.classList.add("col1");
+      field.textContent = fieldName;
+      var value = document.createElement("td");
+      value.classList.add("col2");
+      value.textContent = fields[fieldName];
+      row.appendChild(field);
+      row.appendChild(value);
+      rows.push(row);
+    }
+
+    return rows;
+  }
+
+  // Create a button for each account
+  for (var i in accountData) {
+    console.log(accountData[i]);
+    const data = accountData[i];
+    accountButton(data);
+  }
+
+  // Append 'view all connections' button to bottom of list
+  const viewConnectionsButton = document.createElement("button");
+  viewConnectionsButton.textContent = "View All Connections";
+  viewConnectionsButton.id = "viewConnectionsButton";
+  connectionsList.appendChild(viewConnectionsButton);
 }
 
 //====================================================================
