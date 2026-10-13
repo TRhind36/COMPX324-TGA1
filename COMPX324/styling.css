@@ -21,7 +21,7 @@ main {
   margin-right: auto;
 }
 
-#connections-list {
+#connectionsList {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -68,4 +68,128 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+}
+
+#welcomeTitle {
+  text-align: center;
+  margin: 10px 0 20px 0;
+}
+
+#loginView {
+  margin-top: 30px;
+}
+
+#loginView label {
+  display: block;
+  margin-top: 10px;
+}
+
+#loginView input,
+#pinBox input,
+#forgotBox input {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  margin-top: 5px;
+}
+
+#quickBalanceButton,
+#loginButton,
+#pinButton,
+#cancelPinButton,
+#closeBalanceButton,
+#forgotSendButton,
+#forgotCloseButton {
+  width: 100%;
+  height: 40px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#loginButton,
+#pinButton,
+#forgotSendButton {
+  background-color: #0b868f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+#forgotLink {
+  display: block;
+  margin-top: 15px;
+  color: #1a4fc4;
+}
+
+#pinPopup,
+#balancePopup,
+#forgotPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+}
+
+#pinBox,
+#balanceBox,
+#forgotBox {
+  width: 300px;
+  padding: 20px;
+  background-color: #2b2b2b;
+  color: white;
+}
+
+#balanceBox {
+  width: 320px;
+  background-color: black;
+}
+
+#pinError,
+#forgotError {
+  color: #ff6b6b;
+}
+
+.balance-card {
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+}
+
+.balance-card p {
+  margin: 4px 0;
+}
+
+.balance-amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.balance-available {
+  color: #666;
+}
+
+.transaction {
+  background-color: #E0E0E0;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.transaction p {
+  margin: 5px;
+}
+
+.stock {
+  background-color: #E0E0E0;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.stock p {
+  margin: 5px;
 }

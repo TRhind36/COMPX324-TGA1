@@ -12,9 +12,47 @@
       <a href="" id="homeButton">Dashboard</a>
       <a href="" id="logoutButton">Logout</a>
     </nav>
-    <main>
-      <h3>Login</h3>
-      <button id="loginButton">Login</button>
+       <main>
+      <h1 id="welcomeTitle">Welcome</h1>
+      <button id="quickBalanceButton">Quick Balance</button>
+      <div id="loginView">
+        <label for="usernameInput">Username</label>
+        <input type="text" id="usernameInput" />
+        <label for="passwordInput">Password</label>
+        <input type="password" id="passwordInput" />
+        <button id="loginButton">Log in</button>
+        <a href="" id="forgotLink">Forgot username or password?</a>
+      </div>
+      <div id="pinPopup" style="display: none">
+        <div id="pinBox">
+          <h3>Making sure it's you</h3>
+          <p>We need to verify your identity</p>
+          <input type="password" id="pinInput" placeholder="PIN" maxlength="4" />
+          <p id="pinError" style="display: none">Please enter a 4 digit PIN</p>
+          <button id="pinButton">Enter</button>
+          <button id="cancelPinButton">Cancel</button>
+        </div>
+      </div>
+      <div id="balancePopup" style="display: none">
+        <div id="balanceBox">
+          <h3>Quick Balance</h3>
+          <div id="balanceList"></div>
+          <button id="closeBalanceButton">Close</button>
+        </div>
+      </div>
+        <div id="forgotPopup" style="display: none">
+        <div id="forgotBox">
+          <h3>Forgot username or password?</h3>
+          <div id="forgotForm">
+            <p>Enter your email and we will send you a link to reset them</p>
+            <input type="email" id="forgotEmailInput" placeholder="Email" />
+            <p id="forgotError" style="display: none">Please enter a valid email address</p>
+            <button id="forgotSendButton">Send link</button>
+          </div>
+          <p id="forgotMessage" style="display: none"></p>
+          <button id="forgotCloseButton">Cancel</button>
+        </div>
+      </div>
     </main>
     <script type="module" src="scripts.js"></script>
   </body>
