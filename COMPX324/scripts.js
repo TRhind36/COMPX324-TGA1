@@ -8,7 +8,7 @@ if (!sessionStorage.getItem("loggedIn")) {
 console.log("Logged in: " + sessionStorage.getItem("loggedIn")); // Print login state for testing
 
 // Redirect to login page if not logged in
-if (page !== "login" && sessionStorage.getItem("loggedIn") === "false") {
+if (page !== "login" && page !== "quickBalances" && sessionStorage.getItem("loggedIn") === "false") {
   location.href = "index.html";
 }
 
@@ -93,20 +93,131 @@ if (logoutButton) {
 }
 
 //====================================================================
-// Login/Pin Page Section
-
+// Login/Pin Page Section  Lucas
 if (page === "login") {
+
+  const pinPopup = document.getElementById("pinPopup");
+  const pinInput = document.getElementById("pinInput");
+  const pinError = document.getElementById("pinError");
   const loginButton = document.getElementById("loginButton");
+  const pinButton = document.getElementById("pinButton");
+  const cancelPinButton = document.getElementById("cancelPinButton");
+  const quickBalanceButton = document.getElementById("quickBalanceButton");
+  const balancePopup = document.getElementById("balancePopup");
+  const balanceList = document.getElementById("balanceList");
+  const closeBalanceButton = document.getElementById("closeBalanceButton");
+
+  const forgotLink = document.getElementById("forgotLink");
+  const forgotPopup = document.getElementById("forgotPopup");
+  const forgotForm = document.getElementById("forgotForm");
+  const forgotEmailInput = document.getElementById("forgotEmailInput");
+  const forgotError = document.getElementById("forgotError");
+  const forgotMessage = document.getElementById("forgotMessage");
+  const forgotSendButton = document.getElementById("forgotSendButton");
+  const forgotCloseButton = document.getElementById("forgotCloseButton");
+
+  // Balances shown in the quick balance popup
+  const balances = [
+    { title: "Account 1", balance: 102.56 },
+    { title: "Account 2", balance: 44.65 },
+    { title: "Account 3", balance: 345.78 },
+  ];
+
+  // Show the pin popup after pressing login
   loginButton.addEventListener("click", () => {
-    sessionStorage.setItem("loggedIn", "true");
-    location.href = "home.html";
+    pinPopup.style.display = "flex";
+    pinInput.focus();
+  });
+
+  // Accept any 4 digit pin
+  pinButton.addEventListener("click", () => {
+    if (/^\d{4}$/.test(pinInput.value)) {
+      sessionStorage.setItem("loggedIn", "true");
+      location.href = "home.html";
+    } else {
+      pinError.style.display = "block";
+      pinInput.value = "";
+    }
+  });
+
+  // Close the popup
+  cancelPinButton.addEventListener("click", () => {
+    pinPopup.style.display = "none";
+    pinError.style.display = "none";
+    pinInput.value = "";
+  });
+
+  // Show the balances popup, no login needed
+  quickBalanceButton.addEventListener("click", () => {
+    balanceList.innerHTML = "";
+    balances.forEach((account) => {
+      balanceList.innerHTML +=
+        '<div class="balance-card">' +
+        '<p class="balance-title">' + account.title + '</p>' +
+        '<p class="balance-amount">$' + account.balance.toFixed(2) + '</p>' +
+        '<p class="balance-available">$' + account.balance.toFixed(2) + ' Available</p>' +
+        '</div>';
+    });
+    balancePopup.style.display = "flex";
+  });
+
+  closeBalanceButton.addEventListener("click", () => {
+    balancePopup.style.display = "none";
+  });
+  // Show the forgot details popup
+  forgotLink.addEventListener("click", (event) => {
+    forgotPopup.style.display = "flex";
+    forgotEmailInput.focus();
+    event.preventDefault();
+  });
+
+  // Check the email and show a confirmation message
+  forgotSendButton.addEventListener("click", () => {
+    if (/^\S+@\S+\.\S+$/.test(forgotEmailInput.value)) {
+      forgotForm.style.display = "none";
+      forgotMessage.textContent = "A link to reset your username and password has been sent to " + forgotEmailInput.value + ". Check your inbox and spam folder.";
+      forgotMessage.style.display = "block";
+      forgotCloseButton.textContent = "Close";
+    } else {
+      forgotError.style.display = "block";
+    }
+  });
+
+  // Close the popup and reset it
+  forgotCloseButton.addEventListener("click", () => {
+    forgotPopup.style.display = "none";
+    forgotForm.style.display = "block";
+    forgotMessage.style.display = "none";
+    forgotError.style.display = "none";
+    forgotEmailInput.value = "";
+    forgotCloseButton.textContent = "Cancel";
   });
 }
 
 //====================================================================
-// Quick Balances Page Section
+// Quick Balances Page Section  Lucas
+
 else if (page === "quickBalances") {
-  // ...
+
+  const balanceTable = document.getElementById("balanceTable");
+  const backButton = document.getElementById("backButton");
+
+  // Balances shown in the quick balance popup
+  const balances = [
+    { title: "Account 1", balance: 1000 },
+    { title: "Account 2", balance: 2000 },
+    { title: "Account 3", balance: 3000 },
+  ];
+
+  balances.forEach((account) => {
+    balanceTable.innerHTML +=
+      '<tr><td class="col1">' + account.title + '</td>' +
+      '<td class="col2">$' + account.balance.toFixed(2) + '</td></tr>';
+  });
+
+  backButton.addEventListener("click", () => {
+    location.href = "index.html";
+  });
 }
 
 //====================================================================
