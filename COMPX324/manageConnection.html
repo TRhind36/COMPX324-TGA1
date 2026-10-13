@@ -12,7 +12,37 @@
       <a href="" id="homeButton">Dashboard</a>
       <a href="" id="logoutButton">Logout</a>
     </nav>
-    <main></main>
+    <main>
+            <h1>Manage Connection</h1>
+
+      <h3>FinPrivSys can access:</h3>
+
+      <form action="connectionsList.html">
+        <input type="checkbox" id="option1" name="option1">
+        <label for="option1"></label><br>
+        <input type="checkbox" id="option2" name="option2">
+        <label for="option2"></label><br>
+        <input type="checkbox" id="option2" name="option2">
+        <label for="option3"></label><br>
+      </form>
+
+      <h3>FinPrivSys cannot:</h3>
+
+      <form action="connectionsList.html">
+        <input type="checkbox" id="option3" name="option3">
+        <label for="option4"></label><br>
+        <input type="checkbox" id="option4" name="option4">
+        <label for="option5"></label><br><br>
+        <input type="checkbox" id="option2" name="option2">
+        <label for="option6"></label><br>
+      </form>
+
+      <button type="submit">Save</button>
+
+      <button type="submit">Home</button>
+
+      <button type="submit">Disconnect</button>
+    </main>
     <script type="module" src="scripts.js"></script>
   </body>
 </html>
