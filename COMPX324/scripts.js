@@ -8,7 +8,7 @@ if (!sessionStorage.getItem("loggedIn")) {
 console.log("Logged in: " + sessionStorage.getItem("loggedIn")); // Print login state for testing
 
 // Redirect to login page if not logged in
-if (page !== "login" && page !== "quickBalances" && sessionStorage.getItem("loggedIn") === "false") {
+if (page !== "login" && sessionStorage.getItem("loggedIn") === "false") {
   location.href = "index.html";
 }
 
@@ -20,7 +20,7 @@ if (!sessionStorage.getItem("connectedAccounts")) {
       balance: 1000,
       savings: 500,
       kiwisaver: 2000,
-      mortgage: 500000,
+      mortgage: -500000,
       recentTransactions: [
         {
           from: "Spendings",
@@ -44,7 +44,7 @@ if (!sessionStorage.getItem("connectedAccounts")) {
     },
     {
       title: "StudyLink",
-      balance: 10000,
+      balance: -10000,
       nextPaymentDate: "2026-10-20",
     },
     {
@@ -116,13 +116,6 @@ if (page === "login") {
   const forgotSendButton = document.getElementById("forgotSendButton");
   const forgotCloseButton = document.getElementById("forgotCloseButton");
 
-  // Balances shown in the quick balance popup
-  const balances = [
-    { title: "Account 1", balance: 102.56 },
-    { title: "Account 2", balance: 44.65 },
-    { title: "Account 3", balance: 345.78 },
-  ];
-
   // Show the pin popup after pressing login
   loginButton.addEventListener("click", () => {
     pinPopup.style.display = "flex";
@@ -148,16 +141,26 @@ if (page === "login") {
   });
 
   // Show the balances popup, no login needed
+  var balances = JSON.parse(sessionStorage.getItem("connectedAccounts"));
   quickBalanceButton.addEventListener("click", () => {
     balanceList.innerHTML = "";
-    balances.forEach((account) => {
-      balanceList.innerHTML +=
-        '<div class="balance-card">' +
-        '<p class="balance-title">' + account.title + '</p>' +
-        '<p class="balance-amount">$' + account.balance.toFixed(2) + '</p>' +
-        '<p class="balance-available">$' + account.balance.toFixed(2) + ' Available</p>' +
-        '</div>';
-    });
+    for (var i in balances) {
+      var balanceCard = document.createElement("div");
+      balanceCard.classList.add("balance-card");
+      var balanceTitle = document.createElement("p");
+      balanceTitle.textContent = balances[i].title;
+      balanceTitle.classList.add("balance-title");
+      var balanceAmount = document.createElement("p");
+      balanceAmount.textContent = "$" + balances[i].balance;
+      balanceAmount.classList.add("balance-amount");
+      var balanceAvailable = document.createElement("p");
+      balanceAvailable.textContent = "$" + balances[i].balance + " Available";
+      balanceAvailable.classList.add("balance-available");
+      balanceCard.appendChild(balanceTitle);
+      balanceCard.appendChild(balanceAmount);
+      balanceCard.appendChild(balanceAvailable);
+      balanceList.appendChild(balanceCard);
+    }
     balancePopup.style.display = "flex";
   });
 

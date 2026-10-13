@@ -69,11 +69,6 @@ body {
   margin: 0;
   padding: 0;
 }
-/* Login Page */
-
-body[data-page="login"] {
-  padding-top: 60px;
-}
 
 #welcomeTitle {
   text-align: center;
