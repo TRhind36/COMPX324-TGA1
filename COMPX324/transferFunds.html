@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styling.css" />
+    <title>FinPrivSys</title>
+  </head>
+  <body data-page="transferFunds">
+    <nav>
+      <p class="title-text">FinPrivSys</p>
+      <a href="" id="homeButton">Dashboard</a>
+      <a href="" id="logoutButton">Logout</a>
+    </nav>
+    <main>
+      <h1>Transfer Funds</h1>
+      <p>Here you can transfer funds between your accounts.</p>
+      <div id="transferFundsSection">
+        <div id="FromAccountList"></div>
+        <div id="ToAccountList"></div>
+        <label for="transferAmount">Amount to Transfer:</label>
+        <input
+          type="number"
+          id="transferAmount"
+          name="transferAmount"
+          required
+          step="0.01"
+        />
+      </div>
+    </main>
+    <script type="module" src="scripts.js"></script>
+  </body>
+</html>

@@ -524,6 +524,7 @@ else if (page === "home") {
     const fields = {
       Title: data.title,
       [data.valueName]: data.balance,
+      Savings: data.savings,
     };
 
     var rows = [];
@@ -586,7 +587,6 @@ else if (page === "home") {
 //====================================================================
 // Connection Details Page Section
 else if (page === "connectionDetails") {
-  console.log("Page: " + page);
   const jsonData = sessionStorage.getItem("connectionDetailsData");
   const accountTitle = document.getElementById("accountTitle");
   const accountBalance = document.getElementById("accountBalance");
@@ -656,7 +656,6 @@ else if (page === "connectionDetails") {
 //====================================================================
 // Connections List Page Section
 else if (page === "connectionsList") {
-  console.log("Page: " + page);
   const connectionsListPage = document.getElementById("connectionsPageList");
   const connectedAccounts =
     JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
@@ -778,6 +777,7 @@ else if (page === "connectionsList") {
       const fields = {
         Title: data.title,
         [data.valueName]: data.balance,
+        Savings: data.savings,
       };
 
       var rows = [];
@@ -836,8 +836,6 @@ else if (page === "connectionsList") {
 //====================================================================
 // Add Connection Page Section
 else if (page === "addConnection") {
-  console.log("Add Connection Page Loaded");
-  console.log("Page: " + page);
   const form = document.getElementById("addConnectionForm");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -846,11 +844,13 @@ else if (page === "addConnection") {
     const connectionType = formData.get("connectionType");
     const nameOfValueToBeTracked = formData.get("nameOfValueToBeTracked");
     const valueToBeTracked = parseFloat(formData.get("valueToBeTracked"));
+    const savings = parseFloat(formData.get("addConnectionSavings"));
     const newConnection = {
       title: title,
       type: connectionType,
       valueName: nameOfValueToBeTracked,
       balance: valueToBeTracked,
+      savings: savings,
     };
     const connectedAccounts =
       JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
@@ -919,5 +919,183 @@ else if (page === "successfulDisconnect") {
     dashboardButton.addEventListener("click", () => {
       location.href = "home.html";
     });
+  }
+}
+//====================================================================
+// More Options Page Section
+else if (page === "moreOptions") {
+  const moreOptionsList = document.getElementById("moreOptionsList");
+
+  function createAddExpenseListItem(type) {
+    if (type === "bank" || type === "bnz") {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="addExpense.html">Add Expense</a>`;
+      li.id = "addExpenseListItem";
+      moreOptionsList.appendChild(li);
+    }
+  }
+
+  function createTransferFundsListItem(type) {
+    if (type === "bank" || type === "bnz") {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="transferFunds.html">Transfer Funds</a>`;
+      li.id = "transferFundsListItem";
+      moreOptionsList.appendChild(li);
+      li.addEventListener("click", (event) => {
+        event.preventDefault();
+        location.href = "transferFunds.html";
+      });
+    }
+  }
+} else if (page === "addExpense") {
+} else if (page === "transferFunds") {
+  const jsonData = sessionStorage.getItem("connectionDetailsData");
+  const List = document.createElement("ul");
+  const item = document.createElement("li");
+
+  if (jsonData) {
+    const data = JSON.parse(jsonData);
+
+    const accountTitle = data.title;
+    const accountBalance = data.balance;
+
+    switch (data.title) {
+      case "BNZ": {
+        const info = [
+          { title: accountTitle, balance: accountBalance },
+          { title: "Savings", balance: data.savings },
+          { title: "Kiwisaver", balance: data.kiwisaver },
+          { title: "Mortgage", balance: data.mortgage },
+        ];
+
+        info.forEach((field) => {
+          const li = document.createElement("li");
+          li.textContent = field.title + ": $" + field.balance;
+          List.appendChild(li);
+        });
+
+        const FromList = document.getElementById("FromAccountList");
+        const ToList = document.getElementById("ToAccountList");
+        FromList.appendChild(List);
+
+        const NewList = List.cloneNode(true);
+        ToList.appendChild(NewList);
+
+        const amountInput = document.getElementById("transferAmount");
+        const transferAmount = parseFloat(amountInput.value) || 0;
+        const btn = document.createElement("button");
+        btn.textContent = "Transfer";
+        const transferSection = document.getElementById("transferFundsSection");
+        transferSection.appendChild(btn);
+
+        btn.addEventListener("click", () => {
+          const selectedFrom = FromList.querySelector("li.selected");
+          const selectedTo = ToList.querySelector("li.selected");
+          if (selectedFrom && selectedTo) {
+            const fromAccount = selectedFrom.textContent.split(": $")[0];
+            const toAccount = selectedTo.textContent.split(": $")[0];
+            if (
+              fromAccount !== toAccount &&
+              transferAmount > 0 &&
+              transferAmount <= accountBalance
+            ) {
+              info.forEach((field) => {
+                if (field.title === fromAccount) {
+                  field.balance -= transferAmount;
+                } else if (field.title === toAccount) {
+                  field.balance += transferAmount;
+                }
+              });
+            }
+          }
+        });
+        const fields = {
+          Balance: info.at(0).balance,
+          Kiwisaver: info.at(2).balance,
+          Mortgage: info.at(3).balance,
+          Savings: info.at(1).balance,
+        };
+        sessionStorage.setItem("connectionDetailsData", JSON.stringify(fields));
+        const data = JSON.parse(sessionStorage.getItem("connectedAccounts"));
+        if (data) {
+          for (var i in data) {
+            if (data[i].title === "BNZ") {
+              data[i].balance = fields.Balance;
+              data[i].kiwisaver = fields.Kiwisaver;
+              data[i].mortgage = fields.Mortgage;
+              data[i].savings = fields.Savings;
+            }
+          }
+          sessionStorage.setItem("connectedAccounts", JSON.stringify(data));
+        }
+        break;
+      }
+      case data.type === "bank": {
+        const info = [
+          { title: accountTitle, balance: accountBalance },
+          { title: "Savings", balance: data.savings },
+        ];
+
+        info.forEach((field) => {
+          const li = document.createElement("li");
+          li.textContent = field.title + ": $" + field.balance;
+          List.appendChild(li);
+        });
+
+        const FromList = document.getElementById("FromAccountList");
+        const ToList = document.getElementById("ToAccountList");
+        FromList.appendChild(List);
+
+        const NewList = List.cloneNode(true);
+        ToList.appendChild(NewList);
+
+        const amountInput = document.getElementById("transferAmount");
+        const transferAmount = parseFloat(amountInput.value) || 0;
+        const btn = document.createElement("button");
+        btn.textContent = "Transfer";
+        const transferSection = document.getElementById("transferFundsSection");
+        transferSection.appendChild(btn);
+
+        btn.addEventListener("click", () => {
+          const selectedFrom = FromList.querySelector("li.selected");
+          const selectedTo = ToList.querySelector("li.selected");
+          if (selectedFrom && selectedTo) {
+            const fromAccount = selectedFrom.textContent.split(": $")[0];
+            const toAccount = selectedTo.textContent.split(": $")[0];
+            if (
+              fromAccount !== toAccount &&
+              transferAmount > 0 &&
+              transferAmount <= accountBalance
+            ) {
+              info.forEach((field) => {
+                if (field.title === fromAccount) {
+                  field.balance -= transferAmount;
+                } else if (field.title === toAccount) {
+                  field.balance += transferAmount;
+                }
+              });
+            }
+          }
+        });
+        const fields = {
+          Balance: info.at(0).balance,
+          Savings: info.at(1).balance,
+        };
+        sessionStorage.setItem("connectionDetailsData", JSON.stringify(fields));
+        const data = JSON.parse(sessionStorage.getItem("connectedAccounts"));
+        if (data) {
+          for (var i in data) {
+            if (data[i].type === "bank" && data[i].title === accountTitle) {
+              data[i].balance = fields.Balance;
+              data[i].savings = fields.Savings;
+            }
+          }
+          sessionStorage.setItem("connectedAccounts", JSON.stringify(data));
+        }
+        break;
+      }
+      default:
+        break;
+    }
   }
 }
