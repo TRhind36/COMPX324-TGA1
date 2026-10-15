@@ -35,6 +35,8 @@ main {
 .transfer-account-list li {
   cursor: pointer;
   padding: 6px;
+  background-color: #f0f0f0;
+  margin-bottom: 4px;
 }
 
 .transfer-account-list li.selected {
@@ -341,4 +343,52 @@ body[data-page="transferFunds"] main h1 {
 #transferFundsSection > button {
   min-height: 40px;
   font-weight: bold;
+}
+
+body[data-page="addExpense"] main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#addExpenseSection {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid black;
+  background-color: white;
+}
+
+#addExpenseSection .transfer-account-list {
+  margin: 0;
+}
+
+body[data-page="addExpense"] main > label {
+  margin-top: 4px;
+}
+
+body[data-page="addExpense"] main > input {
+  width: 100%;
+  min-height: 38px;
+  box-sizing: border-box;
+}
+
+#addExpenseButton {
+  min-height: 40px;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+#addExpenseResult {
+  margin: 4px 0 0;
+}
+
+#backFromAddExpenseButton {
+  border: black 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+  color: black;
 }

@@ -972,6 +972,86 @@ else if (page === "moreOptions") {
   createBudgetingListItem();
   createBackListItem();
 } else if (page === "addExpense") {
+  const addExpenseSection = document.getElementById("addExpenseSection");
+  const data = JSON.parse(sessionStorage.getItem("connectionDetailsData"));
+  const amountInput = document.getElementById("expenseAmount");
+  const toInput = document.getElementById("expenseTo");
+  const dateInput = document.getElementById("expenseDate");
+  const addExpenseButton = document.getElementById("addExpenseButton");
+  const addExpenseResult = document.getElementById("addExpenseResult");
+
+  const accounts =
+    data.title === "BNZ"
+      ? [
+          { title: data.title, key: "balance", balance: data.balance },
+          { title: "Savings", key: "savings", balance: data.savings },
+          { title: "Kiwisaver", key: "kiwisaver", balance: data.kiwisaver },
+          { title: "Mortgage", key: "mortgage", balance: data.mortgage },
+        ]
+      : [
+          { title: data.title, key: "balance", balance: data.balance },
+          { title: "Savings", key: "savings", balance: data.savings },
+        ];
+  const accountList = document.createElement("ul");
+  accountList.classList.add("transfer-account-list");
+  let selectedAccountIndex = -1;
+
+  accounts.forEach((account, index) => {
+    const item = document.createElement("li");
+    item.textContent = account.title + ": $" + account.balance;
+    item.addEventListener("click", () => {
+      accountList.querySelectorAll("li.selected").forEach((selectedItem) => {
+        selectedItem.classList.remove("selected");
+      });
+      item.classList.add("selected");
+      selectedAccountIndex = index;
+    });
+    accountList.appendChild(item);
+  });
+  addExpenseSection.appendChild(accountList);
+
+  addExpenseButton.addEventListener("click", () => {
+    const amount = Number.parseFloat(amountInput.value);
+    const recipient = toInput.value.trim();
+    const date = dateInput.value;
+
+    if (selectedAccountIndex === -1 || !amountInput.value || !recipient || !date) {
+      return;
+    }
+
+    const storedAccounts = JSON.parse(sessionStorage.getItem("connectedAccounts"));
+    const storedAccount = storedAccounts.find(
+      (account) => account.title === data.title,
+    );
+    const selectedAccount = accounts[selectedAccountIndex];
+    const newExpense = {
+      from: selectedAccount.title,
+      to: recipient,
+      amount,
+      date,
+    };
+
+    storedAccount[selectedAccount.key] -= amount;
+    storedAccount.recentTransactions =
+      storedAccount.recentTransactions || [];
+    storedAccount.recentTransactions.push(newExpense);
+    data[selectedAccount.key] = storedAccount[selectedAccount.key];
+    data.recentTransactions = storedAccount.recentTransactions;
+
+    sessionStorage.setItem("connectedAccounts", JSON.stringify(storedAccounts));
+    sessionStorage.setItem("connectionDetailsData", JSON.stringify(data));
+
+    selectedAccount.balance = storedAccount[selectedAccount.key];
+    accountList.children[selectedAccountIndex].textContent =
+      selectedAccount.title + ": $" + selectedAccount.balance;
+    accountList.children[selectedAccountIndex].classList.remove("selected");
+    selectedAccountIndex = -1;
+    amountInput.value = "";
+    toInput.value = "";
+    dateInput.value = "";
+    addExpenseResult.textContent = "Expense added successfully.";
+    addExpenseResult.style.display = "block";
+  });
 } else if (page === "transferFunds") {
   const transferSection = document.getElementById("transferFundsSection");
   const jsonData = sessionStorage.getItem("connectionDetailsData");

@@ -6,14 +6,38 @@
     <link rel="stylesheet" href="styling.css" />
     <title>FinPrivSys</title>
   </head>
-  <body>
+  <body data-page="addExpense">
     <nav>
       <p class="title-text">FinPrivSys</p>
       <a href="" id="homeButton">Dashboard</a>
       <a href="" id="logoutButton">Logout</a>
     </nav>
     <main>
-      <p>This is filler Text for testing purposes.</p>
+      <h2 id="addExpenseTitle">Add Expense</h2>
+      <div id="addExpenseSection">
+        <p id="addExpenseConnectionName">
+          Please select the account to add the expense to:
+        </p>
+      </div>
+      <label for="expenseAmount">Expense Amount:</label>
+      <input
+        type="number"
+        id="expenseAmount"
+        name="expenseAmount"
+        placeholder="Enter expense amount"
+      />
+      <label for="expenseTo">Recipient:</label>
+      <input
+        type="text"
+        id="expenseTo"
+        name="expenseTo"
+        placeholder="Enter recipient name"
+      />
+      <label for="expenseDate">Date:</label>
+      <input type="date" id="expenseDate" name="expenseDate" />
+      <button id="addExpenseButton">Add Expense</button>
+      <p id="addExpenseResult" style="display: none"></p>
+      <a id="backFromAddExpenseButton" href="javascript:history.back()">Back</a>
     </main>
     <script type="module" src="scripts.js"></script>
   </body>
