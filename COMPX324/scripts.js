@@ -926,8 +926,8 @@ else if (page === "successfulDisconnect") {
 else if (page === "moreOptions") {
   const moreOptionsList = document.getElementById("moreOptionsList");
 
-  function createAddExpenseListItem(type) {
-    if (type === "bank" || type === "bnz") {
+  function createAddExpenseListItem(account) {
+    if (account.type === "bank" || account.title?.toLowerCase() === "bnz") {
       const li = document.createElement("li");
       li.innerHTML = `<a href="addExpense.html">Add Expense</a>`;
       li.id = "addExpenseListItem";
@@ -935,8 +935,8 @@ else if (page === "moreOptions") {
     }
   }
 
-  function createTransferFundsListItem(type) {
-    if (type === "bank" || type === "bnz") {
+  function createTransferFundsListItem(account) {
+    if (account.type === "bank" || account.title?.toLowerCase() === "bnz") {
       const li = document.createElement("li");
       li.innerHTML = `<a href="transferFunds.html">Transfer Funds</a>`;
       li.id = "transferFundsListItem";
@@ -947,155 +947,156 @@ else if (page === "moreOptions") {
       });
     }
   }
+
+  function createBudgetingListItem() {
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="budgeting.html">Budgeting</a>`;
+    li.id = "budgetingListItem";
+    moreOptionsList.appendChild(li);
+  }
+
+  function createBackListItem() {
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="home.html">Back</a>`;
+    li.id = "backListItem";
+    moreOptionsList.appendChild(li);
+  }
+  const accountData = JSON.parse(
+    sessionStorage.getItem("connectionDetailsData") || "null",
+  );
+
+  if (accountData) {
+    createAddExpenseListItem(accountData);
+    createTransferFundsListItem(accountData);
+  }
+  createBudgetingListItem();
+  createBackListItem();
 } else if (page === "addExpense") {
 } else if (page === "transferFunds") {
+  const transferSection = document.getElementById("transferFundsSection");
   const jsonData = sessionStorage.getItem("connectionDetailsData");
-  const List = document.createElement("ul");
-  const item = document.createElement("li");
+  const data = jsonData ? JSON.parse(jsonData) : null;
 
-  if (jsonData) {
-    const data = JSON.parse(jsonData);
+  if (!data || !data.title || (data.title !== "BNZ" && data.type !== "bank")) {
+    const message = document.createElement("p");
+    message.textContent =
+      "Select a connected bank account before transferring funds.";
+    transferSection.appendChild(message);
+  } else {
+    const info =
+      data.title === "BNZ"
+        ? [
+            { title: data.title, balance: data.balance },
+            { title: "Savings", balance: data.savings },
+            { title: "Kiwisaver", balance: data.kiwisaver },
+            { title: "Mortgage", balance: data.mortgage },
+          ]
+        : [
+            { title: data.title, balance: data.balance },
+            { title: "Savings", balance: data.savings },
+          ];
+    const fromContainer = document.getElementById("FromAccountList");
+    const toContainer = document.getElementById("ToAccountList");
+    const fromList = document.createElement("ul");
+    const toList = document.createElement("ul");
+    fromList.classList.add("transfer-account-list");
+    toList.classList.add("transfer-account-list");
 
-    const accountTitle = data.title;
-    const accountBalance = data.balance;
-
-    switch (data.title) {
-      case "BNZ": {
-        const info = [
-          { title: accountTitle, balance: accountBalance },
-          { title: "Savings", balance: data.savings },
-          { title: "Kiwisaver", balance: data.kiwisaver },
-          { title: "Mortgage", balance: data.mortgage },
-        ];
-
-        info.forEach((field) => {
-          const li = document.createElement("li");
-          li.textContent = field.title + ": $" + field.balance;
-          List.appendChild(li);
+    function addSelectableItems(list) {
+      info.forEach((field, index) => {
+        const item = document.createElement("li");
+        item.textContent = field.title + ": $" + field.balance;
+        item.dataset.accountIndex = String(index);
+        item.addEventListener("click", () => {
+          list.querySelectorAll("li.selected").forEach((selectedItem) => {
+            selectedItem.classList.remove("selected");
+          });
+          item.classList.add("selected");
         });
-
-        const FromList = document.getElementById("FromAccountList");
-        const ToList = document.getElementById("ToAccountList");
-        FromList.appendChild(List);
-
-        const NewList = List.cloneNode(true);
-        ToList.appendChild(NewList);
-
-        const amountInput = document.getElementById("transferAmount");
-        const transferAmount = parseFloat(amountInput.value) || 0;
-        const btn = document.createElement("button");
-        btn.textContent = "Transfer";
-        const transferSection = document.getElementById("transferFundsSection");
-        transferSection.appendChild(btn);
-
-        btn.addEventListener("click", () => {
-          const selectedFrom = FromList.querySelector("li.selected");
-          const selectedTo = ToList.querySelector("li.selected");
-          if (selectedFrom && selectedTo) {
-            const fromAccount = selectedFrom.textContent.split(": $")[0];
-            const toAccount = selectedTo.textContent.split(": $")[0];
-            if (
-              fromAccount !== toAccount &&
-              transferAmount > 0 &&
-              transferAmount <= accountBalance
-            ) {
-              info.forEach((field) => {
-                if (field.title === fromAccount) {
-                  field.balance -= transferAmount;
-                } else if (field.title === toAccount) {
-                  field.balance += transferAmount;
-                }
-              });
-            }
-          }
-        });
-        const fields = {
-          Balance: info.at(0).balance,
-          Kiwisaver: info.at(2).balance,
-          Mortgage: info.at(3).balance,
-          Savings: info.at(1).balance,
-        };
-        sessionStorage.setItem("connectionDetailsData", JSON.stringify(fields));
-        const data = JSON.parse(sessionStorage.getItem("connectedAccounts"));
-        if (data) {
-          for (var i in data) {
-            if (data[i].title === "BNZ") {
-              data[i].balance = fields.Balance;
-              data[i].kiwisaver = fields.Kiwisaver;
-              data[i].mortgage = fields.Mortgage;
-              data[i].savings = fields.Savings;
-            }
-          }
-          sessionStorage.setItem("connectedAccounts", JSON.stringify(data));
-        }
-        break;
-      }
-      case data.type === "bank": {
-        const info = [
-          { title: accountTitle, balance: accountBalance },
-          { title: "Savings", balance: data.savings },
-        ];
-
-        info.forEach((field) => {
-          const li = document.createElement("li");
-          li.textContent = field.title + ": $" + field.balance;
-          List.appendChild(li);
-        });
-
-        const FromList = document.getElementById("FromAccountList");
-        const ToList = document.getElementById("ToAccountList");
-        FromList.appendChild(List);
-
-        const NewList = List.cloneNode(true);
-        ToList.appendChild(NewList);
-
-        const amountInput = document.getElementById("transferAmount");
-        const transferAmount = parseFloat(amountInput.value) || 0;
-        const btn = document.createElement("button");
-        btn.textContent = "Transfer";
-        const transferSection = document.getElementById("transferFundsSection");
-        transferSection.appendChild(btn);
-
-        btn.addEventListener("click", () => {
-          const selectedFrom = FromList.querySelector("li.selected");
-          const selectedTo = ToList.querySelector("li.selected");
-          if (selectedFrom && selectedTo) {
-            const fromAccount = selectedFrom.textContent.split(": $")[0];
-            const toAccount = selectedTo.textContent.split(": $")[0];
-            if (
-              fromAccount !== toAccount &&
-              transferAmount > 0 &&
-              transferAmount <= accountBalance
-            ) {
-              info.forEach((field) => {
-                if (field.title === fromAccount) {
-                  field.balance -= transferAmount;
-                } else if (field.title === toAccount) {
-                  field.balance += transferAmount;
-                }
-              });
-            }
-          }
-        });
-        const fields = {
-          Balance: info.at(0).balance,
-          Savings: info.at(1).balance,
-        };
-        sessionStorage.setItem("connectionDetailsData", JSON.stringify(fields));
-        const data = JSON.parse(sessionStorage.getItem("connectedAccounts"));
-        if (data) {
-          for (var i in data) {
-            if (data[i].type === "bank" && data[i].title === accountTitle) {
-              data[i].balance = fields.Balance;
-              data[i].savings = fields.Savings;
-            }
-          }
-          sessionStorage.setItem("connectedAccounts", JSON.stringify(data));
-        }
-        break;
-      }
-      default:
-        break;
+        list.appendChild(item);
+      });
     }
+
+    addSelectableItems(fromList);
+    addSelectableItems(toList);
+    fromContainer.appendChild(fromList);
+    toContainer.appendChild(toList);
+
+    const amountInput = document.getElementById("transferAmount");
+    const status = document.createElement("p");
+    const transferButton = document.createElement("button");
+    transferButton.textContent = "Transfer";
+    transferSection.appendChild(transferButton);
+    transferSection.appendChild(status);
+
+    transferButton.addEventListener("click", () => {
+      const selectedFrom = fromList.querySelector("li.selected");
+      const selectedTo = toList.querySelector("li.selected");
+      const fromIndex = selectedFrom
+        ? Number(selectedFrom.dataset.accountIndex)
+        : -1;
+      const toIndex = selectedTo ? Number(selectedTo.dataset.accountIndex) : -1;
+      const transferAmount = Number.parseFloat(amountInput.value);
+
+      if (fromIndex < 0 || toIndex < 0) {
+        status.textContent = "Choose one account in each list.";
+        return;
+      }
+      if (fromIndex === toIndex) {
+        status.textContent = "Choose different accounts to transfer between.";
+        return;
+      }
+      if (
+        !Number.isFinite(transferAmount) ||
+        transferAmount <= 0 ||
+        transferAmount > info[fromIndex].balance
+      ) {
+        status.textContent =
+          "Enter a valid amount that does not exceed the selected source balance.";
+        return;
+      }
+
+      const storedAccounts = JSON.parse(
+        sessionStorage.getItem("connectedAccounts") || "[]",
+      );
+      const storedAccount = storedAccounts.find(
+        (account) =>
+          account.title === data.title &&
+          (data.title === "BNZ" || account.type === "bank"),
+      );
+      if (!storedAccount) {
+        status.textContent =
+          "Could not find this account to save the transfer.";
+        return;
+      }
+
+      info[fromIndex].balance -= transferAmount;
+      info[toIndex].balance += transferAmount;
+
+      [fromList, toList].forEach((list) => {
+        list.querySelectorAll("li").forEach((item, index) => {
+          item.textContent = info[index].title + ": $" + info[index].balance;
+        });
+      });
+
+      storedAccount.balance = info[0].balance;
+      storedAccount.savings = info[1].balance;
+      if (data.title === "BNZ") {
+        storedAccount.kiwisaver = info[2].balance;
+        storedAccount.mortgage = info[3].balance;
+      }
+      data.balance = info[0].balance;
+      data.savings = info[1].balance;
+      if (data.title === "BNZ") {
+        data.kiwisaver = info[2].balance;
+        data.mortgage = info[3].balance;
+      }
+      sessionStorage.setItem(
+        "connectedAccounts",
+        JSON.stringify(storedAccounts),
+      );
+      sessionStorage.setItem("connectionDetailsData", JSON.stringify(data));
+      status.textContent = "Transfer completed.";
+    });
   }
 }

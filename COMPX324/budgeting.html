@@ -14,26 +14,36 @@
       <a href="" id="logoutButton">Logout</a>
     </nav>
     <main>
-      <h1>Budgeting</h1>
-      <input type="number" id="budgetInput" placeholder="Enter your budget" />
-      <input type="number" id="billsInput" placeholder="Bill Amount" />
-      <input type="number" id="carInput" placeholder="Car related expenses" />
-      <input type="number" id="groceriesInput" placeholder="Groceries" />
-      <input type="number" id="insurancesInput" placeholder="Insurances" />
-      <input
-        type="number"
-        id="subscriptionsInput"
-        placeholder="Subscriptions"
-      />
-      <input type="number" id="spendingInput" placeholder="Spending" />
-      <input type="number" id="savingsInput" placeholder="Savings" />
-      <p id="RemainingAmount">Left: $0.00</p>
-      <p id="savingsResult">Savings: $0.00</p>
-      <button id="saveButton">Save</button>
-      <button id="exportButton">Export</button>
-      <button id="loadData">Load previous budget</button>
+      <div id="budgetingDetails">
+        <h1>Budgeting</h1>
+        <label for="budgetInput">Budget:</label>
+        <input type="number" id="budgetInput" placeholder="Enter your budget" />
+        <label for="billsInput">Bills:</label>
+        <input type="number" id="billsInput" placeholder="Bill Amount" />
+        <label for="carInput">Car:</label>
+        <input type="number" id="carInput" placeholder="Car related expenses" />
+        <label for="groceriesInput">Groceries:</label>
+        <input type="number" id="groceriesInput" placeholder="Groceries" />
+        <label for="insurancesInput">Insurances:</label>
+        <input type="number" id="insurancesInput" placeholder="Insurances" />
+        <label for="subscriptionsInput">Subscriptions:</label>
+        <input
+          type="number"
+          id="subscriptionsInput"
+          placeholder="Subscriptions"
+        />
+        <label for="spendingInput">Spending:</label>
+        <input type="number" id="spendingInput" placeholder="Spending" />
+        <label for="savingsInput">Savings:</label>
+        <input type="number" id="savingsInput" placeholder="Savings" />
+        <p id="RemainingAmount">Left: $0.00</p>
+        <p id="savingsResult">Savings: $0.00</p>
+        <button id="saveButton">Save</button>
+        <button id="exportButton">Export</button>
+        <button id="loadData">Load previous budget</button>
 
-      <p id="saveResult" style="display: none"></p>
+        <p id="saveResult" style="display: none"></p>
+      </div>
     </main>
     <script type="module" src="scripts.js"></script>
   </body>

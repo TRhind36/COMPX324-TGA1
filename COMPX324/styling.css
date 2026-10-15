@@ -14,7 +14,7 @@ nav {
 
 main {
   padding: 10px;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
 }
 
 .title-text {
@@ -30,6 +30,16 @@ main {
 
 .connection-button {
   width: 100%;
+}
+
+.transfer-account-list li {
+  cursor: pointer;
+  padding: 6px;
+}
+
+.transfer-account-list li.selected {
+  background-color: #d0e8ff;
+  outline: 2px solid #0b868f;
 }
 
 .connection-table {
@@ -175,7 +185,7 @@ body {
 }
 
 .transaction {
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
   padding: 5px;
   margin-bottom: 10px;
 }
@@ -185,11 +195,150 @@ body {
 }
 
 .stock {
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
   padding: 5px;
   margin-bottom: 10px;
 }
 
 .stock p {
   margin: 5px;
+}
+
+#moreOptionsButton {
+  border: black 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+#addConnectionButton {
+  border: black 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+#budgetingDetails {
+  border: black 1px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+#budgetingDetails h1,
+#budgetingDetails p {
+  margin: 0;
+}
+
+#budgetingDetails input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#budgetingDetails #RemainingAmount {
+  margin-top: 12px;
+}
+
+body[data-page="addConnection"] main h1 {
+  margin-top: 0;
+}
+
+#addConnectionForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+#addConnectionForm input,
+#addConnectionForm select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#addConnectionForm button {
+  margin-top: 12px;
+}
+
+#moreOptionsList {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#moreOptionsList a {
+  display: block;
+  padding: 12px;
+  border: 1px solid black;
+  color: inherit;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #d8d8d8;
+}
+
+#moreOptionsList a:hover,
+#moreOptionsList a:focus-visible {
+  background-color: #c8e5e6;
+}
+
+body[data-page="transferFunds"] main h1 {
+  margin-top: 0;
+}
+
+#transferFundsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#FromAccountList,
+#ToAccountList {
+  padding: 10px;
+  border: 1px solid black;
+  background-color: white;
+}
+
+#FromAccountList::before,
+#ToAccountList::before {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+#FromAccountList::before {
+  content: "Transfer from";
+}
+
+#ToAccountList::before {
+  content: "Transfer to";
+}
+
+.transfer-account-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#transferAmount {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#transferFundsSection > button {
+  min-height: 40px;
+  font-weight: bold;
 }
