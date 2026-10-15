@@ -843,6 +843,19 @@ else if (page === "connectionsList") {
 // Add Connection Page Section
 else if (page === "addConnection") {
   const form = document.getElementById("addConnectionForm");
+  const connectionTypeSelect = document.getElementById("connectionType");
+  connectionTypeSelect.addEventListener("change", () => {
+    const selectedType = connectionTypeSelect.value;
+    const savingsInput = document.getElementById("addConnectionSavings");
+    const savingsLabel = document.getElementById("addConnectionSavingsLabel");
+    if (selectedType === "bank") {
+      savingsInput.style.display = "block";
+      savingsLabel.style.display = "block";
+    } else if (selectedType === "investment") {
+      savingsInput.style.display = "none";
+      savingsLabel.style.display = "none";
+    }
+  });
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(form);

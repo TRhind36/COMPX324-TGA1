@@ -23,26 +23,27 @@
           <option value="bank">Bank</option>
           <option value="investment">Investment</option>
         </select>
-        <label for="nameOfValueToBeTracked">Name of Value to be Tracked:</label>
+        <label for="nameOfValueToBeTracked">Name of Account:</label>
         <input
           type="text"
           id="nameOfValueToBeTracked"
           name="nameOfValueToBeTracked"
           required
         />
-        <label for="valueToBeTracked">Value to be Tracked:</label>
+        <label for="valueToBeTracked">Balance of Account:</label>
         <input
           type="number"
           id="valueToBeTracked"
           name="valueToBeTracked"
           required
         />
-        <label for="addConnectionSavings">Savings:</label>
+        <label id="addConnectionSavingsLabel" for="addConnectionSavings"
+          >Balance of Savings Account:</label
+        >
         <input
           type="number"
           id="addConnectionSavings"
           name="addConnectionSavings"
-          required
         />
 
         <button type="submit">Add Connection</button>
