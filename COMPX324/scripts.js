@@ -41,11 +41,13 @@ if (!sessionStorage.getItem("connectedAccounts")) {
           date: "2026-09-27",
         },
       ],
+      access: "True",
     },
     {
       title: "StudyLink",
       balance: -10000,
       nextPaymentDate: "2026-10-20",
+      access: "True",
     },
     {
       title: "Sharesies",
@@ -64,6 +66,7 @@ if (!sessionStorage.getItem("connectedAccounts")) {
           purchaseDate: "2026-03-19",
         },
       ],
+      access: "True",
     },
   ];
 
@@ -394,7 +397,6 @@ else if (page === "budgeting") {
 //====================================================================
 // Home/Dashboard Page Section
 else if (page === "home") {
-  console.log("Page: " + page);
   const connectionsList = document.getElementById("connectionsList");
 
   const accountData = JSON.parse(sessionStorage.getItem("connectedAccounts"));
@@ -570,7 +572,9 @@ else if (page === "home") {
   // Create a button for each account
   for (var i in accountData) {
     const data = accountData[i];
-    accountButton(data);
+    if (data.access === "True") {
+      accountButton(data);
+    }
   }
 
   // Append 'view all connections' button to bottom of list
@@ -829,7 +833,9 @@ else if (page === "connectionsList") {
   }
   for (var i in connectedAccounts) {
     const data = connectedAccounts[i];
-    accountButtonForConnectionListPage(data);
+    if (data.access === "True") {
+      accountButtonForConnectionListPage(data);
+    }
   }
 }
 
@@ -851,6 +857,7 @@ else if (page === "addConnection") {
       valueName: nameOfValueToBeTracked,
       balance: valueToBeTracked,
       savings: savings,
+      access: "True",
     };
     const connectedAccounts =
       JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
@@ -867,7 +874,68 @@ else if (page === "addConnection") {
 //====================================================================
 // Manage Connections Page Section
 else if (page === "manageConnection") {
-  // ...
+  const data = JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
+  const accessList = document.getElementById("manageConnectionsAccess");
+  const noAccessList = document.getElementById("manageConnectionsNoAccess");
+  const changeAccessButton = document.getElementById("changeAccessButton");
+  const disconnectButton = document.getElementById("disconnectAccountButton");
+  let selectedAccountIndex = null;
+
+  data.forEach((account) => {
+    if (account.access !== "False") {
+      account.access = "True";
+    }
+  });
+
+  function renderAccountLists() {
+    accessList.innerHTML = "";
+    noAccessList.innerHTML = "";
+    changeAccessButton.disabled = selectedAccountIndex === null;
+    disconnectButton.disabled = selectedAccountIndex === null;
+    const accessAccountsList = document.createElement("ul");
+    const noAccessAccountsList = document.createElement("ul");
+    accessAccountsList.classList.add("transfer-account-list");
+    noAccessAccountsList.classList.add("transfer-account-list");
+
+    data.forEach((account, index) => {
+      const li = document.createElement("li");
+      li.textContent = account.title;
+      if (index === selectedAccountIndex) {
+        li.classList.add("selected");
+      }
+      li.addEventListener("click", () => {
+        selectedAccountIndex = index;
+        renderAccountLists();
+      });
+
+      if (account.access === "True") {
+        accessAccountsList.appendChild(li);
+      } else {
+        noAccessAccountsList.appendChild(li);
+      }
+    });
+
+    accessList.appendChild(accessAccountsList);
+    noAccessList.appendChild(noAccessAccountsList);
+  }
+
+  renderAccountLists();
+  sessionStorage.setItem("connectedAccounts", JSON.stringify(data));
+
+  changeAccessButton.addEventListener("click", () => {
+    const account = data[selectedAccountIndex];
+    account.access = account.access === "True" ? "False" : "True";
+    sessionStorage.setItem("connectedAccounts", JSON.stringify(data));
+    renderAccountLists();
+  });
+
+  disconnectButton.addEventListener("click", () => {
+    sessionStorage.setItem(
+      "disconnectionData",
+      JSON.stringify(data[selectedAccountIndex]),
+    );
+    location.href = "disconnectService.html";
+  });
 }
 
 //====================================================================
@@ -912,6 +980,15 @@ else if (page === "successfulDisconnect") {
     disconnectNote1.textContent = data.title + " has been disconnected";
     disconnectNote2.textContent =
       appName + " can no longer access " + data.title;
+    const connectedAccounts =
+      JSON.parse(sessionStorage.getItem("connectedAccounts")) || [];
+    const updatedAccounts = connectedAccounts.filter(
+      (account) => account.title !== data.title,
+    );
+    sessionStorage.setItem(
+      "connectedAccounts",
+      JSON.stringify(updatedAccounts),
+    );
 
     returnButton.addEventListener("click", () => {
       location.href = "connectionsList.html";
@@ -1015,11 +1092,18 @@ else if (page === "moreOptions") {
     const recipient = toInput.value.trim();
     const date = dateInput.value;
 
-    if (selectedAccountIndex === -1 || !amountInput.value || !recipient || !date) {
+    if (
+      selectedAccountIndex === -1 ||
+      !amountInput.value ||
+      !recipient ||
+      !date
+    ) {
       return;
     }
 
-    const storedAccounts = JSON.parse(sessionStorage.getItem("connectedAccounts"));
+    const storedAccounts = JSON.parse(
+      sessionStorage.getItem("connectedAccounts"),
+    );
     const storedAccount = storedAccounts.find(
       (account) => account.title === data.title,
     );
@@ -1032,8 +1116,7 @@ else if (page === "moreOptions") {
     };
 
     storedAccount[selectedAccount.key] -= amount;
-    storedAccount.recentTransactions =
-      storedAccount.recentTransactions || [];
+    storedAccount.recentTransactions = storedAccount.recentTransactions || [];
     storedAccount.recentTransactions.push(newExpense);
     data[selectedAccount.key] = storedAccount[selectedAccount.key];
     data.recentTransactions = storedAccount.recentTransactions;

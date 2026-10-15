@@ -392,3 +392,84 @@ body[data-page="addExpense"] main > input {
   margin-top: 20px;
   color: black;
 }
+#manageConnectionsButton {
+  border: black 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+body[data-page="manageConnection"] main h1,
+body[data-page="disconnectService"] main h1,
+body[data-page="successfulDisconnect"] main h1 {
+  margin-top: 0;
+}
+
+body[data-page="manageConnection"] main > h3 {
+  margin: 16px 0 8px;
+}
+
+#manageConnectionsAccess,
+#manageConnectionsNoAccess {
+  padding: 8px;
+  border: 1px solid black;
+  background-color: white;
+}
+
+#manageConnectionsAccess ul,
+#manageConnectionsNoAccess ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#manageConnectionsAccess + h3,
+#manageConnectionsNoAccess + button {
+  margin-top: 16px;
+}
+
+body[data-page="manageConnection"] main > button,
+body[data-page="disconnectService"] .dualButton button,
+body[data-page="successfulDisconnect"] .dualButton button {
+  min-height: 40px;
+  font-weight: bold;
+}
+
+body[data-page="manageConnection"] main > button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+body[data-page="manageConnection"] main > a {
+  display: block;
+  margin-top: 16px;
+  color: inherit;
+}
+
+body[data-page="disconnectService"] main,
+body[data-page="successfulDisconnect"] main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-page="disconnectService"] main h1,
+body[data-page="successfulDisconnect"] main h1,
+body[data-page="disconnectService"] main h3,
+body[data-page="disconnectService"] main h4,
+body[data-page="successfulDisconnect"] main h2,
+body[data-page="successfulDisconnect"] main h3 {
+  margin-bottom: 0;
+}
+
+body[data-page="disconnectService"] .dualButton,
+body[data-page="successfulDisconnect"] .dualButton {
+  margin-top: 12px;
+}
+
+body[data-page="disconnectService"] #disconnectButton {
+  background-color: #d8d8d8;
+}

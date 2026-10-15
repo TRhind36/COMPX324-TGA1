@@ -6,49 +6,23 @@
     <link rel="stylesheet" href="styling.css" />
     <title>FinPrivSys</title>
   </head>
-  <body>
+  <body data-page="manageConnection">
     <nav>
       <p class="title-text">FinPrivSys</p>
       <a href="" id="homeButton">Dashboard</a>
       <a href="" id="logoutButton">Logout</a>
     </nav>
     <main>
-            <h1>Manage Connection</h1>
-
+      <h1>Manage Connection</h1>
+      <h3>Click to select:</h3>
       <h3>FinPrivSys can access:</h3>
-
-      <form action="connectionsList.html">
-        <input type="checkbox" id="option1" name="option1">
-        <label for="option1"></label><br>
-        <input type="checkbox" id="option2" name="option2">
-        <label for="option2"></label><br>
-        <input type="checkbox" id="option2" name="option2">
-        <label for="option3"></label><br>
-      </form>
+      <div id="manageConnectionsAccess"></div>
 
       <h3>FinPrivSys cannot:</h3>
-
-      <form action="connectionsList.html">
-        <input type="checkbox" id="option3" name="option3">
-        <label for="option4"></label><br>
-        <input type="checkbox" id="option4" name="option4">
-        <label for="option5"></label><br><br>
-        <input type="checkbox" id="option2" name="option2">
-        <label for="option6"></label><br>
-      </form>
-
-      <form action="connectionsList.html">
-        <button type="submit">Save</button>
-      </form>
-      
-      <form action="home.html">
-        <button type="submit">Home</button>
-      </form>
-      
-      <form action="disconnectService.html">
-        <button type="submit">Disconnect</button>
-      </form>
-      
+      <div id="manageConnectionsNoAccess"></div>
+      <button id="changeAccessButton">Change Access</button>
+      <button id="disconnectAccountButton">Disconnect Account</button>
+      <a href="connectionsList.html">Back</a>
     </main>
     <script type="module" src="scripts.js"></script>
   </body>
